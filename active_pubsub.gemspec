@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jasonayre@gmail.com"]
   spec.summary       = %q{Pubsub using RabbitMQ and ActiveRecord, observe model events from different services.}
   spec.description   = %q{Uses RabbitMQ and ActiveRecord for publishing and consuming model events from any service}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/jasonayre/active_pubsub"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -18,18 +18,14 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake"
-
   spec.add_dependency "active_attr"
   spec.add_dependency "celluloid-io"
   spec.add_dependency "json"
   spec.add_dependency "bunny"
-  spec.add_dependency "pry-nav"
 
   spec.add_development_dependency 'activerecord'
   spec.add_development_dependency 'sqlite3'
-  spec.add_development_dependency "bundler"
+  spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rspec-pride"
