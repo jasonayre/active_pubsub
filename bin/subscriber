@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require 'active_pubsub'
+require './config/environment.rb'
+
+class Subscriber < ::Thor
+  desc "start", "Start Rabbit Subscriber"
+  def start
+    puts "Starting Rabbit Subscriber SERVER"
+
+    ::ActivePubsub.load_subscribers
+
+    ::ActivePubsub.start_subscribers
+    
+    puts "Subscribers Started"
+  end
+end
+
+::Subscriber.start
+
+sleep
