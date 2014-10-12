@@ -6,6 +6,7 @@ require "bunny"
 require "celluloid"
 require "active_support/all"
 require "active_attr"
+require "pry"
 
 module ActivePubsub
   class << self
