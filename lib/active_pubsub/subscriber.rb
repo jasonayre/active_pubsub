@@ -34,20 +34,21 @@ module ActivePubsub
         channel.queue(queue_for_event(event_name.to_s))
                .bind(exchange, :routing_key => routing_key_for_event(event_name))
                .subscribe do |delivery_info, properties, payload|
-          event = deserialize_event(payload)
-          resource = deserialize_record(event[:record])
+          deserialized_event = deserialize_event(payload)
+          deserialized_record = deserialize_record(deserialized_event[:record])
 
-          block.call(resource)
+          subscriber_instance = new(deserialized_record)
+          subscriber_instance.instance_exec(deserialized_record, &block)
         end
       end
     end
 
     def self.deserialize_event(event)
-      @current_event = Marshal.load(event)
+      @current_event = ::Marshal.load(event)
     end
 
     def self.deserialize_record(record)
-      @current_record = Marshal.load(record)
+      @current_record = ::Marshal.load(record)
     end
 
     def self.observes(target_exchange)
@@ -72,5 +73,13 @@ module ActivePubsub
 
       puts message
     end
+
+    ### Instance Methods ###
+    attr_accessor :record
+
+    def initialize(record)
+      @record = record
+    end
+
   end
 end
