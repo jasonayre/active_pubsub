@@ -98,6 +98,24 @@ Average processed (subscriber) messages/second: 100-150
 
 The throughput seems to be limited by the publisher mostly, from the very limited benchmarks thus far.
 
+### Connecting to rabbit
+
+If you are running rabbit at different address or port, set address via ENV variable, i.e.
+
+```
+RABBITMQ_URL=amqp://guest:guest@x.x.x.x:XXXX bundle exec subscriber start
+```
+
+Or you can set via config
+
+``` ruby
+::ActivePubsub.configure do |config|
+  config.address = "amqp://guest:guest@x.x.x.x:XXXX"
+end
+```
+
+Its still really early in development cycle, so there may be issues running tests if you aren't running rabbit. Should probably fix that.
+
 ### Installation
 
 Add this line to your application's Gemfile:
