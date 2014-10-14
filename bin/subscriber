@@ -5,17 +5,21 @@ require 'active_pubsub'
 require './config/environment.rb'
 
 class Subscriber < ::Thor
-  desc "start", "Start Rabbit Subscriber"
+  desc "start", "Start ActivePubsub Subscriber"
   def start
-    puts "Starting Rabbit Subscriber SERVER"
+    puts "Starting ActivePubsub Subscriber"
 
     ::ActivePubsub.load_subscribers
 
     ::ActivePubsub.start_subscribers
-    
+
     puts "Subscribers Started"
   end
 end
+
+#todo: write event loop that handles shutdown gracefully
+#however, it seems that Bunny knows when to wake subscribers up
+#so sleeping seems to be enough for now
 
 ::Subscriber.start
 
