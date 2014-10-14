@@ -56,5 +56,4 @@ require "active_pubsub/event"
 require "active_pubsub/publisher"
 require "active_pubsub/publishable"
 require "active_pubsub/subscriber"
-
 require 'active_pubsub/railtie' if defined?(Rails)
