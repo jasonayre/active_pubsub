@@ -1,5 +1,3 @@
-'celluloid/io'
-
 module ActivePubsub
   class Publisher
     include ::Celluloid
@@ -54,8 +52,6 @@ module ActivePubsub
 
     def publish_event(event)
       ::ActiveRecord::Base.connection_pool.with_connection do
-        puts event.inspect
-
         exchanges[event.exchange].publish(serialize_event(event), :routing_key => event.routing_key)
       end
     end
