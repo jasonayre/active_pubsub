@@ -25,7 +25,7 @@ module ActivePubsub
 
     def publish_updated_event
       record_updated_event = ::ActivePubsub::Event.new(self.class.exchange_key, "updated", serialized_resource)
-
+      
       ::ActivePubsub.publish_event(record_updated_event)
     end
 
