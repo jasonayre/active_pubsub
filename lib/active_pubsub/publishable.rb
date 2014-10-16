@@ -7,9 +7,9 @@ module ActivePubsub
     included do
       include ::ActiveModel::Dirty
 
-      after_create :publish_created_event
-      after_update :publish_updated_event
-      after_destroy :publish_destroyed_event
+      after_commit :publish_created_event, :on => :create
+      after_commit :publish_updated_event, :on => :update
+      after_commit :publish_destroyed_event, :on => :destroy
       class_attribute :exchange_prefix
 
       self.publishable_actions ||= []
@@ -25,7 +25,7 @@ module ActivePubsub
 
     def publish_updated_event
       record_updated_event = ::ActivePubsub::Event.new(self.class.exchange_key, "updated", serialized_resource)
-      
+
       ::ActivePubsub.publish_event(record_updated_event)
     end
 
