@@ -11,6 +11,24 @@ describe ::ActivePubsub::Publishable do
     end
 
     context "Instance Methods" do
+      describe "#attributes_hash" do
+        #had to do some hackyness in attributes_hash method to get this to pass
+        #and not sure why, but as_json was coming back nil
+        it "should call as json" do
+          instance_subject.should_receive(:as_json)
+
+          instance_subject.attributes_hash
+        end
+
+        context "when attributes are changed" do
+          let(:created_record) { ::Fake::Blog::Post.create!(:title => "Post about nothing") }
+
+          it "should merge previous changes" do
+            expect(created_record.attributes_hash).to have_key("title")
+          end
+        end
+      end
+
       describe "#publish_updated_event" do
         let(:created_record) { ::Fake::Blog::Post.create!(:title => "Post about nothing") }
 

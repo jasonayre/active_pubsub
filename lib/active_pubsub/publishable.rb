@@ -17,8 +17,11 @@ module ActivePubsub
       ::ActivePubsub::Publisher.increment_publishable_model_count!
     end
 
+    ### todo: investigate why specs break if && hash is omitted
     def attributes_hash
-      attributes.merge!("changes" => changes)
+      hash = self.as_json
+      hash.merge!(:changes => previous_changes) if previous_changes && hash
+      hash
     end
 
     private

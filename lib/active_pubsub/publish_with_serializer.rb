@@ -2,7 +2,7 @@ module ActivePubsub
   module PublishWithSerializer
     extend ActiveSupport::Concern
 
-    #todo: move this into separate gem
+    #todo: move this into separate gem?
 
     included do
       class_attribute :publish_serializer
@@ -10,7 +10,8 @@ module ActivePubsub
 
     def serialized_resource
        serialized_resource_attributes = self.class.publish_serializer.new(self).attributes
-       serialized_resource_attributes.merge!("changes" => changes) if self.changed?
+       serialized_resource_attributes.merge!(:changes => previous_changes) if previous_changes
+
       ::Marshal.dump(serialized_resource_attributes)
     end
 
