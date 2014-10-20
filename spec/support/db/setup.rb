@@ -18,4 +18,13 @@ ActiveRecord::Schema.define(:version => 1) do
 
     t.timestamps
   end
+
+  create_table :authors do |t|
+    t.string :first_name
+    t.string :last_name
+    t.string :slug
+    t.integer :user_id
+
+    t.timestamps
+  end
 end
