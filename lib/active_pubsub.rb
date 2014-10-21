@@ -37,9 +37,11 @@ module ActivePubsub
   end
 
   def self.start_subscribers
-    puts "Starting subscribers"
+
     ::ActivePubsub::Subscriber.subclasses.each do |subscriber|
       next if subscriber.started?
+
+      puts "Starting #{subscriber.name}"
 
       subscriber.bind_subscriptions!
       subscriber.print_subscriptions!

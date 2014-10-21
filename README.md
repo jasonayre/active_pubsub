@@ -39,6 +39,24 @@ class PostSubscriber < ::ActivePubsub::Subscriber
 end
 ```
 
+### Subscribe to individual attribute changes
+
+``` ruby
+class PostSubscriber < ::ActivePubsub::Subscriber
+  include ::ActivePubsub::SubscribeToChanges
+
+  # Note: Do NOT define updated as an event, as on_change
+  # uses updated event so latter event will override former
+  observes "cms"
+  as "aggregator"
+
+  on_change :title do |new_value, old_value|
+    puts record.inspect
+    puts new_value
+  end
+end
+```
+
 ## Publishing events
 
 Just include ::ActivePubsub::Publishable module into an active record class whose events you want to publish.
