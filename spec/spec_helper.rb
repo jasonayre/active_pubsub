@@ -9,6 +9,9 @@ SimpleCov.start do
 end
 
 RSpec.configure do |config|
+  config.before(:suite) do
+    ::ActivePubsub.start_subscribers
+  end
 end
 
 Bundler.require(:default, :development, :test)

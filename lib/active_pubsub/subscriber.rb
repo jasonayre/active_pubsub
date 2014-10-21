@@ -8,11 +8,16 @@ module ActivePubsub
     class_attribute :exchange_name
     class_attribute :connection
     class_attribute :local_service_namespace
+    class_attribute :started
 
-    self.events = {}
     self.connection = ::ActivePubsub::Connection.new
+    self.started = false
 
     ### Class Methods ###
+    def self.as(service_namespace)
+      self.local_service_namespace = service_namespace
+    end
+
     def self.channel
       connection.channel
     end
@@ -21,8 +26,8 @@ module ActivePubsub
       channel.topic(exchange_name, :auto_delete => true)
     end
 
-    def self.as(service_namespace)
-      self.local_service_namespace = service_namespace
+    def self.inherited(klass)
+      klass.events = {}
     end
 
     def self.on(event_name, &block)
@@ -30,6 +35,8 @@ module ActivePubsub
     end
 
     def self.bind_subscriptions!
+      return if started?
+
       events.each_pair do |event_name, block|
         channel.queue(queue_for_event(event_name.to_s))
                .bind(exchange, :routing_key => routing_key_for_event(event_name))
@@ -41,6 +48,8 @@ module ActivePubsub
           subscriber_instance.instance_exec(deserialized_record, &block)
         end
       end
+
+      self.started = true
     end
 
     def self.deserialize_event(event)
@@ -72,6 +81,10 @@ module ActivePubsub
       end
 
       puts message
+    end
+
+    def self.started?
+      self.started
     end
 
     ### Instance Methods ###

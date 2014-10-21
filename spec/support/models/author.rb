@@ -9,6 +9,8 @@ module Fake
       serialize_publish_with ::AuthorSerializer
 
       publish_as "test"
+
+      has_many :posts, :class_name => "Fake::Blog::Post"
     end
   end
 end

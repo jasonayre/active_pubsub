@@ -14,16 +14,20 @@ ActiveRecord::Schema.define(:version => 1) do
     t.string :body
     t.string :title
     t.string :slug
-    t.integer :user_id
+    t.integer :author_id
 
     t.timestamps
+  end
+
+  create_table :author_post_reports do |t|
+    t.integer :author_id
+    t.integer :post_count
   end
 
   create_table :authors do |t|
     t.string :first_name
     t.string :last_name
     t.string :slug
-    t.integer :user_id
 
     t.timestamps
   end

@@ -24,7 +24,7 @@ describe ::ActivePubsub::Publishable do
           let(:created_record) { ::Fake::Blog::Post.create!(:title => "Post about nothing") }
 
           it "should merge previous changes" do
-            expect(created_record.attributes_hash).to have_key("title")
+            expect(created_record.attributes_hash).to have_key(:title)
           end
         end
       end

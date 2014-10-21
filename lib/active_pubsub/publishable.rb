@@ -21,6 +21,7 @@ module ActivePubsub
     def attributes_hash
       hash = self.as_json
       hash.merge!(:changes => previous_changes) if previous_changes && hash
+      hash.symbolize_keys! if hash
       hash
     end
 

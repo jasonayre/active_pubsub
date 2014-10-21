@@ -5,6 +5,8 @@ module Fake
       include ::ActivePubsub::Publishable
 
       publish_as "test"
+
+      belongs_to :author, :class_name => "Fake::Blog::Author"
     end
   end
 end
