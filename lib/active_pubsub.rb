@@ -37,8 +37,10 @@ module ActivePubsub
   end
 
   def self.start_subscribers
-    puts "Starting subscriber"
+    puts "Starting subscribers"
     ::ActivePubsub::Subscriber.subclasses.each do |subscriber|
+      next if subscriber.started?
+
       subscriber.bind_subscriptions!
       subscriber.print_subscriptions!
     end
@@ -55,6 +57,7 @@ require "active_pubsub/config"
 require "active_pubsub/event"
 require "active_pubsub/publisher"
 require "active_pubsub/publishable"
-require "active_pubsub/subscriber"
 require "active_pubsub/publish_with_serializer"
+require "active_pubsub/subscriber"
+require "active_pubsub/subscribe_to_changes"
 require 'active_pubsub/railtie' if defined?(Rails)
