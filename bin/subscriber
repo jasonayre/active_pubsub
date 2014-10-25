@@ -14,6 +14,7 @@ class Subscriber < ::Thor
     ::ActivePubsub.start_subscribers
 
     puts "Subscribers Started"
+    ::ActivePubsub.logger.info "Stopping Subscriber"
   end
 end
 
@@ -22,5 +23,12 @@ end
 #so sleeping seems to be enough for now
 
 ::Subscriber.start
+
+[:INT, :QUIT, :TERM].each do |signal|
+  trap(signal) do
+    ::ActivePubsub.logger.info "Stopping Subscriber"
+    exit 0
+  end
+end
 
 sleep
