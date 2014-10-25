@@ -10,6 +10,7 @@ module ActivePubsub
       self[:address] ||= ENV['RABBITMQ_URL']
       self[:publish_as] ||= nil
       self[:service_namespace] ||= nil
+      self[:logger] ||= ::Rails.logger if defined?(::Rails)
     end
   end
 end

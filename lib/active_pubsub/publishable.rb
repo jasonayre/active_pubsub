@@ -31,18 +31,25 @@ module ActivePubsub
       record_updated_event = ::ActivePubsub::Event.new(self.class.exchange_key, "updated", serialized_resource)
 
       ::ActivePubsub.publish_event(record_updated_event)
+
+      ::ActivePubsub.logger.info "Published #{record_updated_event}"
     end
 
     def publish_created_event
       record_created_event = ::ActivePubsub::Event.new(self.class.exchange_key, "created", serialized_resource)
 
+
       ::ActivePubsub.publish_event(record_created_event)
+
+      ::ActivePubsub.logger.info "Published #{record_created_event}"
     end
 
     def publish_destroyed_event
       record_destroyed_event = ::ActivePubsub::Event.new(self.class.exchange_key, "destroyed", serialized_resource)
 
       ::ActivePubsub.publish_event(record_destroyed_event)
+
+      ::ActivePubsub.logger.info "Published #{record_destroyed_event}"
     end
 
     def serialized_resource

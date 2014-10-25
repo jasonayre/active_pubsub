@@ -14,6 +14,7 @@ module ActivePubsub
     alias_method :config, :configuration
 
     delegate :publish_event, :to => :publisher
+    delegate :logger, :to => :configuration
   end
 
   def self.configure
