@@ -5,6 +5,16 @@ Service oriented observers for active record, via RabbitMQ and Bunny gem. Publis
 Best examples can be found here:
 https://github.com/jasonayre/active_pubsub_examples
 
+### Quick important development/spring bug note ###
+If you are having issues with either publisher or subscribers hanging in development,
+kill spring. Kill it twice actually. Make sure its dead. Then restart with env var
+
+```
+DISABLE_SPRING=1 bx subscriber start
+```
+
+And when running server or console make sure to DISABLE_SPRING=1 as well. (dont know how to treat the problem yet just diagnose the symptom which seems to be spring)
+
 ## Publisher Example
 ``` ruby
 class Post < ::ActiveRecord::Base
