@@ -18,6 +18,11 @@ module ActivePubsub
       self.local_service_namespace = service_namespace
     end
 
+    def self.clear_connections!
+      channel.close
+      connection.close
+    end
+
     def self.channel
       connection.channel
     end
@@ -46,6 +51,8 @@ module ActivePubsub
 
           subscriber_instance = new(deserialized_record)
           subscriber_instance.instance_exec(deserialized_record, &block)
+
+          ::ActivePubsub.logger.info "#{delivery_info[:routing_key]} #{name} consumed #{deserialized_event}"
         end
       end
 
@@ -53,11 +60,11 @@ module ActivePubsub
     end
 
     def self.deserialize_event(event)
-      @current_event = ::Marshal.load(event)
+      ::Marshal.load(event)
     end
 
     def self.deserialize_record(record)
-      @current_record = ::Marshal.load(record)
+      ::Marshal.load(record)
     end
 
     def self.observes(target_exchange)
@@ -80,7 +87,7 @@ module ActivePubsub
                    "\n"
       end
 
-      puts message
+      ::ActivePubsub.logger.info(message)
     end
 
     def self.started?
@@ -93,6 +100,5 @@ module ActivePubsub
     def initialize(record)
       @record = record
     end
-
   end
 end

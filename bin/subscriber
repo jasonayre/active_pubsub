@@ -5,30 +5,53 @@ require 'active_pubsub'
 require './config/environment.rb'
 
 class Subscriber < ::Thor
+  option :address, :type => :string, :default => ENV['RABBITMQ_URL'], :aliases => %w(-a), :desc => "RabbitMQ url. Default is #{ENV['RABBITMQ_URL']}"
+  option :log, :type => :string, :default => ::STDOUT, :aliases => %w(-l), :desc => 'Log file or device. Default is STDOUT.'
+  option :level, :type => :numeric, :default => ::Logger::INFO, :aliases => %w(-v), :desc => 'Log level to use, 0-5 (see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/)'
+
   desc "start", "Start ActivePubsub Subscriber"
   def start
-    puts "Starting ActivePubsub Subscriber"
+    merge_config_options!(options)
+    configure_logger
+    configure_traps
+    start_subscribers
+  end
 
-    ::ActivePubsub.load_subscribers
+  no_tasks do
+    def configure_logger
+      log_level = options.debug? ? ::Logger::DEBUG : options.level
+      ::ActivePubsub::Logging.initialize_logger(options.log, log_level)
 
-    ::ActivePubsub.start_subscribers
+      ::ActivePubsub.config.logger
+    end
 
-    puts "Subscribers Started"
-    ::ActivePubsub.logger.info "Stopping Subscriber"
+    # Configure signal traps.
+    def configure_traps
+      exit_signals = [:INT, :TERM]
+      exit_signals << :QUIT unless defined?(JRUBY_VERSION)
+
+      exit_signals.each do |signal|
+        trap(signal) do
+          puts "Stopping Subscribers"
+          exit(0)
+        end
+      end
+    end
+
+    def merge_config_options!(options)
+      ::ActivePubsub.config.merge!(options)
+    end
+
+    def start_subscribers
+      ::ActivePubsub.logger.info "Starting Subscribers"
+
+      ::ActivePubsub.load_subscribers
+
+      ::ActivePubsub.start_subscribers
+    end
   end
 end
-
-#todo: write event loop that handles shutdown gracefully
-#however, it seems that Bunny knows when to wake subscribers up
-#so sleeping seems to be enough for now
 
 ::Subscriber.start
-
-[:INT, :QUIT, :TERM].each do |signal|
-  trap(signal) do
-    ::ActivePubsub.logger.info "Stopping Subscriber"
-    exit 0
-  end
-end
 
 sleep

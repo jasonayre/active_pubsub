@@ -1,6 +1,5 @@
 require "bunny"
 
-
 module ActivePubsub
   class Connection < Delegator
     attr_accessor :connection, :channel

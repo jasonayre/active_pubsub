@@ -52,6 +52,8 @@ module ActivePubsub
 
     def publish_event(event)
       ::ActiveRecord::Base.connection_pool.with_connection do
+        ::ActivePubsub.logger.info("Publishing event: #{event.id} to #{event.routing_key}")
+
         exchanges[event.exchange].publish(serialize_event(event), :routing_key => event.routing_key)
       end
     end

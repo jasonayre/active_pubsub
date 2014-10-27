@@ -5,7 +5,7 @@ module ActivePubsub
     # we only need publisher started if service has a publishable model
     ::ActiveSupport.on_load(:active_record) do
       if(::ActivePubsub::Publisher.publishable_model_count > 0) && !::ActivePubsub::Publisher.started?
-        puts "Starting Publisher"
+        ::ActivePubsub.logger.info("Starting Publisher")
         ::ActivePubsub::Publisher.start
       end
     end
