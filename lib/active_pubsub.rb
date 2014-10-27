@@ -7,6 +7,8 @@ require "celluloid"
 require "active_support/all"
 require "active_attr"
 require "pry"
+require "active_pubsub/config"
+require "active_pubsub/logging"
 
 module ActivePubsub
   class << self
@@ -16,9 +18,9 @@ module ActivePubsub
     delegate :publish_event, :to => :publisher
   end
 
-  def self.configure
-    self.configuration ||= ::ActivePubsub::Config.new
+  @configuration ||= ::ActivePubsub::Config.new
 
+  def self.configure
     yield(configuration)
 
     ::ActiveSupport.run_load_hooks(:active_pubsub, self)
@@ -26,6 +28,14 @@ module ActivePubsub
 
   def self.load_subscribers
     ::Dir.glob(::Rails.root.join('app', 'subscribers', "*.rb")).each{ |file| load file }
+  end
+
+  def self.logger
+    configuration.logger
+  end
+
+  def self.logger?
+    configuration.logger.present?
   end
 
   def self.publisher
@@ -37,11 +47,10 @@ module ActivePubsub
   end
 
   def self.start_subscribers
-
     ::ActivePubsub::Subscriber.subclasses.each do |subscriber|
       next if subscriber.started?
 
-      puts "Starting #{subscriber.name}"
+      ::ActivePubsub.logger.info("Starting #{subscriber.name}")
 
       subscriber.bind_subscriptions!
       subscriber.print_subscriptions!
@@ -51,11 +60,9 @@ module ActivePubsub
   def self.symbolize_routing_key(routing_key)
     :"#{routing_key.split('.').join('_')}"
   end
-
 end
 
 require "active_pubsub/connection"
-require "active_pubsub/config"
 require "active_pubsub/event"
 require "active_pubsub/publisher"
 require "active_pubsub/publishable"
