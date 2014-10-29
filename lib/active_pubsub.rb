@@ -9,6 +9,7 @@ require "active_attr"
 require "pry"
 require "active_pubsub/config"
 require "active_pubsub/logging"
+require "active_pubsub/settings"
 
 module ActivePubsub
   class << self

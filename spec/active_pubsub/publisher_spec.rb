@@ -46,6 +46,32 @@ describe ::ActivePubsub::Publisher do
     its(:exchanges) { should include(exchange_key) }
   end
 
+  describe "#options_for_publish" do
+    let(:expected) {
+      {
+        :routing_key => fake_event.routing_key,
+        :persistent => false
+      }
+    }
+
+    it { subject.options_for_publish(fake_event).should eq expected }
+
+    context "durable is true" do
+      before do
+        ::ActivePubsub::Config.any_instance.stub(:durable).and_return(true)
+      end
+
+      let(:expected) do
+        {
+          :routing_key => fake_event.routing_key,
+          :persistent => true
+        }
+      end
+
+      it { subject.options_for_publish(fake_event).should eq expected }
+    end
+  end
+
   describe "#publish_event" do
     it "should receive publish event with instance of event when publishable record is saved" do
       subject.should_receive(:publish_event).with(instance_of(::ActivePubsub::Event))

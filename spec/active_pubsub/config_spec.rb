@@ -15,6 +15,9 @@ describe ::ActivePubsub::Config do
     its(:address) { should eq ENV["RABBITMQ_URL"] }
     its(:publish_as) { should eq nil }
     its(:service_namespace) { should eq nil }
+    its(:ack) { should be false }
+    its(:durable) { should be false }
+    its(:logger) { should be_instance_of(::Logger) }
   end
 
 end

@@ -11,6 +11,8 @@ module ActivePubsub
       self[:publish_as] ||= nil
       self[:service_namespace] ||= nil
       self[:logger] ||= ::ActivePubsub::Logging.logger
+      self[:durable] ||= false
+      self[:ack] ||= false
     end
   end
 end

@@ -2,6 +2,8 @@ require 'active_support/all'
 
 module ActivePubsub
   class Subscriber
+    include ::ActivePubsub::Settings
+
     attr_accessor :connection
 
     class_attribute :events
@@ -28,7 +30,7 @@ module ActivePubsub
     end
 
     def self.exchange
-      channel.topic(exchange_name, :auto_delete => true)
+      channel.topic(exchange_name, exchange_settings)
     end
 
     def self.inherited(klass)
@@ -43,9 +45,9 @@ module ActivePubsub
       return if started?
 
       events.each_pair do |event_name, block|
-        channel.queue(queue_for_event(event_name.to_s))
+        channel.queue(queue_for_event(event_name.to_s), queue_settings)
                .bind(exchange, :routing_key => routing_key_for_event(event_name))
-               .subscribe do |delivery_info, properties, payload|
+               .subscribe(subscribe_settings) do |delivery_info, properties, payload|
           deserialized_event = deserialize_event(payload)
           deserialized_record = deserialize_record(deserialized_event[:record])
 
@@ -53,6 +55,8 @@ module ActivePubsub
           subscriber_instance.instance_exec(deserialized_record, &block)
 
           ::ActivePubsub.logger.info "#{delivery_info[:routing_key]} #{name} consumed #{deserialized_event}"
+
+          channel.ack(delivery_info.delivery_tag) if ::ActivePubsub.config.ack
         end
       end
 
