@@ -27,6 +27,10 @@ module ActivePubsub
     ::ActiveSupport.run_load_hooks(:active_pubsub, self)
   end
 
+  def self.disable_publisher!
+    configuration.disable_publisher = true
+  end
+
   def self.load_subscribers
     ::Dir.glob(::Rails.root.join('app', 'subscribers', "*.rb")).each{ |file| load file }
   end
@@ -41,6 +45,10 @@ module ActivePubsub
 
   def self.publisher
     ::Celluloid::Actor[:rabbit_publisher]
+  end
+
+  def self.publisher_disabled?
+    configuration.publisher_disabled
   end
 
   def self.start_publisher

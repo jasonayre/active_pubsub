@@ -13,6 +13,7 @@ module ActivePubsub
       self[:logger] ||= ::ActivePubsub::Logging.logger
       self[:durable] ||= false
       self[:ack] ||= false
+      self[:publisher_disabled] ||= false
     end
   end
 end

@@ -59,6 +59,8 @@ module ActivePubsub
     end
 
     def publish_event(event)
+      return if ::ActivePubsub.publisher_disabled?
+
       ::ActiveRecord::Base.connection_pool.with_connection do
         ::ActivePubsub.logger.info("Publishing event: #{event.id} to #{event.routing_key}")
 

@@ -18,6 +18,7 @@ describe ::ActivePubsub::Config do
     its(:ack) { should be false }
     its(:durable) { should be false }
     its(:logger) { should be_instance_of(::Logger) }
+    its(:publisher_disabled) { should eq false }
   end
 
 end
