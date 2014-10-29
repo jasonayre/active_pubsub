@@ -144,6 +144,31 @@ end
 
 Its still really early in development cycle, so there may be issues running tests if you aren't running rabbit. Should probably fix that.
 
+### Configuration, Persistence, Acknowledgement and Durability
+
+Rabbit allows you to configure the hell out of it. In the spirit of convention over configuration, Ive attempted to dumb that down into shared settings, i.e., durability being applied across the board (to queues, exchanges, as well as persisting messages, set to true)
+
+**NOTE**
+
+If you change a config setting, you will likely need to remove your queues and exchanges. Rabbit does not let you override queues or exchanges or bindings at runtime with different settings. You need to destroy them manually, and easiest way to do this is via gui.
+
+** Durability **
+
+``` ruby
+::ActivePubsub.config.durable = true
+```
+
+Will make all your queues, exchanges, durable. This means they will be there when your broker is restarted. It will ALSO make the publishing of messages persisted to disk. I could split this into two settings, but once again, in the spirit of simplicity Ive elected not to for now.
+
+
+** Message Acknowledgement **
+
+``` ruby
+::ActivePubsub.config.ack = true
+```
+
+Will turn on message acknowledgement. What this means, is if there is an error in your subscriber and it fails to get to the end of your on :eventname block, it will not acknowledge that it was processed, and mark it as unacknowledged. This is a way to provide insight into failures, as well as reprocessing events, however its a poor mans solution at best. Reason being, once a subscriber attempts to process a message and fails, rabbit marks that the consumer attempted to do so, and rabbit will not let release the message back to the queue (if it did, you would suffer from potentially immediate and infinite retrys to process the message). See the following link for more details on the problem in general: http://grokbase.com/t/rabbitmq/rabbitmq-discuss/137ts15m5r/push-to-back-of-queue-on-nack
+
 ### Installation
 
 Add this line to your application's Gemfile:
