@@ -152,7 +152,7 @@ Rabbit allows you to configure the hell out of it. In the spirit of convention o
 
 If you change a config setting, you will likely need to remove your queues and exchanges. Rabbit does not let you override queues or exchanges or bindings at runtime with different settings. You need to destroy them manually, and easiest way to do this is via gui.
 
-** Durability **
+**Durability**
 
 ``` ruby
 ::ActivePubsub.config.durable = true
@@ -161,7 +161,7 @@ If you change a config setting, you will likely need to remove your queues and e
 Will make all your queues, exchanges, durable. This means they will be there when your broker is restarted. It will ALSO make the publishing of messages persisted to disk. I could split this into two settings, but once again, in the spirit of simplicity Ive elected not to for now.
 
 
-** Message Acknowledgement **
+**Message Acknowledgement**
 
 ``` ruby
 ::ActivePubsub.config.ack = true
